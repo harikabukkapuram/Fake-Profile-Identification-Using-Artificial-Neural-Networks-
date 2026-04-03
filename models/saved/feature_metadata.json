@@ -1,0 +1,1 @@
+{"feature_cols": ["statuses_count", "followers_count", "friends_count", "favourites_count", "listed_count", "utc_offset", "description_len", "has_profile_image", "engagement_score", "follower_friend_ratio", "lang_label"], "num_rows": 6825}

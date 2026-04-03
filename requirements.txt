@@ -1,0 +1,22 @@
+flask
+flask_sqlalchemy
+werkzeug
+tensorflow
+torch
+scikit-learn
+pandas
+numpy
+networkx
+jwt
+joblib 
+matplotlib
+torchaudio
+torchvision
+torch-geometric
+bcrypt
+
+# # install torch + pyg (CPU example; update for your system)
+# pip install  torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+# # then install PyG following their instructions for your torch version; or:
+# pip install torch-geometric
+# # NOTE: sometimes torch-geometric requires extra wheel installs (torch-scatter etc). See https://pytorch-geometric.readthedocs.io/

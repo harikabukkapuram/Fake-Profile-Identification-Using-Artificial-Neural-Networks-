@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Report Profile — FakeProfileDetect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4>Report Suspicious Profile to Admin</h4>
+        <form method="post" action="{{ url_for('report_form') }}">
+          <div class="mb-2">
+            <label class="form-label">Profile ID / Handle</label>
+            <input name="profile_id" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Optional: Profile JSON / Notes</label>
+            <textarea name="profile_raw" class="form-control" rows="5"></textarea>
+          </div>
+          <button class="btn btn-danger">Report to Admin</button>
+          <a class="btn btn-secondary" href="{{ url_for('user_dashboard') }}">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+
+<h4 class="mb-2">Retrain Model</h4>
+<p class="small text-muted">Upload a CSV with feature columns + a label (0/1). We auto-pick numeric features if you leave the list blank.</p>
+
+<div class="glass p-3 rounded">
+  <form method="post" action="{{ url_for('admin_retrain') }}" enctype="multipart/form-data" class="row g-3">
+    <div class="col-12">
+      <label class="form-label">CSV dataset</label>
+      <input type="file" name="csv" class="form-control" accept=".csv" required>
+    </div>
+    <div class="col-md-8">
+      <label class="form-label">Feature columns (comma separated)</label>
+      <input name="features" class="form-control" placeholder="f1,f2,f3,f4">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Label column</label>
+      <input name="labelcol" value="label" class="form-control">
+    </div>
+    <div class="col-12 d-flex gap-2">
+      <button class="btn btn-primary">Start Training</button>
+      <a class="btn btn-outline-secondary" href="{{ url_for('download_active_model') }}">Download Active Model</a>
+    </div>
+  </form>
+</div>
+
+{% if last_run %}
+  <div class="glass p-3 rounded mt-3">
+    <h6>Last training run</h6>
+    <pre class="mb-0">{{ last_run | pprint }}</pre>
+  </div>
+{% endif %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block body %}
+  <div class="box">
+    <h2>Test CSV Mode</h2>
+    <form method="post" enctype="multipart/form-data">
+      <label>Upload test CSV (optional)</label>
+      <input type="file" name="upload_csv" accept=".csv">
+      <label>Or enter id from test.csv (press Enter for first row)</label>
+      <input name="id_input" placeholder="id value">
+      <div class="actions">
+        <button type="submit">Predict</button>
+      </div>
+    </form>
+  </div>
+
+  {% if df is not none %}
+    <div class="box">
+      <h3>Test.csv preview (first 5 rows)</h3>
+      <table class="tbl">
+        <thead>
+          <tr>{% for c in df.columns[:8] %}<th>{{ c }}</th>{% endfor %}</tr>
+        </thead>
+        <tbody>
+          {% for _,r in df.head(5).iterrows() %}
+            <tr>{% for c in df.columns[:8] %}<td>{{ r[c] }}</td>{% endfor %}</tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+  {% if prediction %}
+    <div class="box result">
+      <h3>Prediction (from CSV row)</h3>
+      <pre>{{ prediction | tojson(indent=2) }}</pre>
+      <div class="final">
+        {% if prediction.label == "genuine" %}
+          <div class="badge genuine">GENUINE — {{ (prediction.label_confidence|float)|round(2) }}%</div>
+        {% else %}
+          <div class="badge fake">FAKE — {{ (prediction.label_confidence|float)|round(2) }}%</div>
+        {% endif %}
+        <p>Raw final_score: {{ prediction.final_score }}</p>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

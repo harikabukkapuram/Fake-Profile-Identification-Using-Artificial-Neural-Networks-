@@ -1,0 +1,460 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="mb-1">Charts & Analytics</h4>
+    <p class="small text-muted mb-0">At-a-glance KPIs and latest model metrics.</p>
+  </div>
+  <button class="btn btn-sm btn-outline-primary" onclick="refreshCharts()">
+    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="me-1">
+      <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+      <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+    </svg>
+    Refresh Charts
+  </button>
+</div>
+
+<div class="stat-grid mb-4">
+  <div class="stat-card stat-card-hover">
+    <div class="stat-icon" style="background: rgba(245,158,11,0.15);">
+      <svg width="24" height="24" fill="#fbbf24" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+      </svg>
+    </div>
+    <h6>Total Flagged</h6>
+    <h3>{{ metrics.total_flagged }}</h3>
+    <div class="stat-trend">All time</div>
+  </div>
+
+  <div class="stat-card stat-card-hover">
+    <div class="stat-icon" style="background: rgba(239,68,68,0.15);">
+      <svg width="24" height="24" fill="#f87171" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="M8 4a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 8 4zM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+      </svg>
+    </div>
+    <h6>Pending Review</h6>
+    <h3>{{ metrics.pending }}</h3>
+    <div class="stat-trend">Needs action</div>
+  </div>
+
+  <div class="stat-card stat-card-hover">
+    <div class="stat-icon" style="background: rgba(139,92,246,0.15);">
+      <svg width="24" height="24" fill="#a78bfa" viewBox="0 0 16 16">
+        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
+        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708Z"/>
+      </svg>
+    </div>
+    <h6>Blocked Users</h6>
+    <h3>{{ metrics.blocked_users }}</h3>
+    <div class="stat-trend">Restricted access</div>
+  </div>
+
+  <div class="stat-card stat-card-hover">
+    <div class="stat-icon" style="background: rgba(16,185,129,0.15);">
+      <svg width="24" height="24" fill="#34d399" viewBox="0 0 16 16">
+        <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z"/>
+      </svg>
+    </div>
+    <h6>Model Accuracy</h6>
+    <h3>{{ '%.1f%%'|format(metrics.accuracy * 100) if metrics.accuracy is defined and metrics.accuracy else '—' }}</h3>
+    <div class="stat-trend">Latest training</div>
+  </div>
+</div>
+
+<!-- Interactive Charts -->
+<div class="row g-4 mt-2">
+  <!-- Status Distribution (Doughnut Chart) -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm p-4" style="background: var(--card-bg); border: 1px solid var(--border) !important;">
+      <h5 class="mb-3">Status Distribution</h5>
+      <div id="statusChartContainer" style="height: 280px; position: relative;">
+        <canvas id="statusChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flagged Profiles Timeline (Line Chart) -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm p-4" style="background: var(--card-bg); border: 1px solid var(--border) !important;">
+      <h5 class="mb-3">Flagged Profiles (Last 7 Days)</h5>
+      <div id="timelineChartContainer" style="height: 280px; position: relative;">
+        <canvas id="timelineChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Model Performance Metrics (Bar Chart) -->
+  <div class="col-12">
+    <div class="card border-0 shadow-sm p-4" style="background: var(--card-bg); border: 1px solid var(--border) !important;">
+      <h5 class="mb-3">Model Performance History</h5>
+      <div id="modelMetricsChartContainer" style="height: 300px; position: relative;">
+        <canvas id="modelMetricsChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Dark theme colors
+const chartColors = {
+  primary: '#8b5cf6',
+  secondary: '#06b6d4',
+  success: '#10b981',
+  danger: '#ef4444',
+  warning: '#f59e0b',
+  info: '#3b82f6',
+  purple: '#a78bfa',
+  pink: '#ec4899',
+  textColor: '#e5e7eb',
+  gridColor: 'rgba(255, 255, 255, 0.1)',
+  backgroundColor: 'rgba(139, 92, 246, 0.1)'
+};
+
+// Default chart configuration for dark theme
+Chart.defaults.color = chartColors.textColor;
+Chart.defaults.borderColor = chartColors.gridColor;
+
+// Store chart instances globally so we can destroy and recreate them
+let statusChart, timelineChart, modelMetricsChart;
+
+// Ensure all canvas elements exist in the DOM
+function ensureCanvasElements() {
+  const containers = [
+    { container: 'statusChartContainer', canvas: 'statusChart' },
+    { container: 'timelineChartContainer', canvas: 'timelineChart' },
+    { container: 'modelMetricsChartContainer', canvas: 'modelMetricsChart' }
+  ];
+  
+  containers.forEach(item => {
+    const container = document.getElementById(item.container);
+    if (container) {
+      let canvas = document.getElementById(item.canvas);
+      if (!canvas) {
+        console.log(`Recreating missing canvas: ${item.canvas}`);
+        container.innerHTML = `<canvas id="${item.canvas}"></canvas>`;
+      }
+    }
+  });
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Function to load and render all charts
+function loadCharts() {
+  console.log('Loading charts from /admin/charts_data...');
+  
+  // Ensure all canvas elements exist before trying to render
+  ensureCanvasElements();
+  
+  fetch('/admin/charts_data', {
+    method: 'GET',
+    credentials: 'same-origin',
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+  .then(response => {
+    console.log('Response status:', response.status);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Chart data received:', data);
+    
+    // Check if backend returned an error
+    if (data.error) {
+      throw new Error(data.error + (data.details ? ' - ' + data.details : ''));
+    }
+    
+    // Destroy existing charts before creating new ones
+    if (statusChart) {
+      statusChart.destroy();
+      statusChart = null;
+    }
+    if (timelineChart) {
+      timelineChart.destroy();
+      timelineChart = null;
+    }
+    if (modelMetricsChart) {
+      modelMetricsChart.destroy();
+      modelMetricsChart = null;
+    }
+
+    // 1. Status Distribution Doughnut Chart
+    const statusCanvas = document.getElementById('statusChart');
+    if (!statusCanvas) {
+      throw new Error('Status chart canvas not found in DOM');
+    }
+    const statusCtx = statusCanvas.getContext('2d');
+    const statusLabels = Object.keys(data.status_distribution || {});
+    const statusValues = Object.values(data.status_distribution || {});
+    
+    statusChart = new Chart(statusCtx, {
+      type: 'doughnut',
+      data: {
+        labels: statusLabels.map(s => s.charAt(0).toUpperCase() + s.slice(1)),
+        datasets: [{
+          data: statusValues,
+          backgroundColor: [
+            chartColors.warning,  // pending
+            chartColors.success,  // reviewed
+            chartColors.danger,   // actioned
+            chartColors.info,     // dismissed
+            chartColors.purple    // withdrawn
+          ],
+          borderColor: '#1a1f2e',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 15,
+              color: chartColors.textColor,
+              font: { size: 12 }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#1a1f2e',
+            titleColor: chartColors.textColor,
+            bodyColor: chartColors.textColor,
+            borderColor: chartColors.primary,
+            borderWidth: 1,
+            padding: 12,
+            displayColors: true
+          }
+        }
+      }
+    });
+
+    // 2. Timeline Line Chart
+    const timelineCanvas = document.getElementById('timelineChart');
+    if (!timelineCanvas) {
+      throw new Error('Timeline chart canvas not found in DOM');
+    }
+    const timelineCtx = timelineCanvas.getContext('2d');
+    const timelineLabels = (data.timeline || []).map(item => {
+      const date = new Date(item.date);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    });
+    const timelineValues = (data.timeline || []).map(item => item.count);
+    
+    timelineChart = new Chart(timelineCtx, {
+      type: 'line',
+      data: {
+        labels: timelineLabels,
+        datasets: [{
+          label: 'Flagged Profiles',
+          data: timelineValues,
+          borderColor: chartColors.primary,
+          backgroundColor: chartColors.backgroundColor,
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+          pointBackgroundColor: chartColors.primary,
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: chartColors.textColor,
+              stepSize: 1
+            },
+            grid: {
+              color: chartColors.gridColor
+            }
+          },
+          x: {
+            ticks: {
+              color: chartColors.textColor
+            },
+            grid: {
+              color: chartColors.gridColor
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#1a1f2e',
+            titleColor: chartColors.textColor,
+            bodyColor: chartColors.textColor,
+            borderColor: chartColors.primary,
+            borderWidth: 1,
+            padding: 12
+          }
+        }
+      }
+    });
+
+    // 3. Model Performance Bar Chart
+    const metricsCanvas = document.getElementById('modelMetricsChart');
+    if (!metricsCanvas) {
+      throw new Error('Model metrics chart canvas not found in DOM');
+    }
+    const metricsCtx = metricsCanvas.getContext('2d');
+    const metricsLabels = (data.model_metrics || []).map(item => item.date);
+    
+    modelMetricsChart = new Chart(metricsCtx, {
+      type: 'bar',
+      data: {
+        labels: metricsLabels,
+        datasets: [
+          {
+            label: 'Accuracy',
+            data: (data.model_metrics || []).map(item => (item.accuracy * 100).toFixed(1)),
+            backgroundColor: chartColors.success,
+            borderColor: chartColors.success,
+            borderWidth: 1
+          },
+          {
+            label: 'Precision',
+            data: (data.model_metrics || []).map(item => (item.precision * 100).toFixed(1)),
+            backgroundColor: chartColors.info,
+            borderColor: chartColors.info,
+            borderWidth: 1
+          },
+          {
+            label: 'Recall',
+            data: (data.model_metrics || []).map(item => (item.recall * 100).toFixed(1)),
+            backgroundColor: chartColors.warning,
+            borderColor: chartColors.warning,
+            borderWidth: 1
+          },
+          {
+            label: 'F1 Score',
+            data: (data.model_metrics || []).map(item => (item.f1 * 100).toFixed(1)),
+            backgroundColor: chartColors.primary,
+            borderColor: chartColors.primary,
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              color: chartColors.textColor,
+              callback: function(value) {
+                return value + '%';
+              }
+            },
+            grid: {
+              color: chartColors.gridColor
+            }
+          },
+          x: {
+            ticks: {
+              color: chartColors.textColor
+            },
+            grid: {
+              color: chartColors.gridColor,
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: chartColors.textColor,
+              padding: 15,
+              font: { size: 12 }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#1a1f2e',
+            titleColor: chartColors.textColor,
+            bodyColor: chartColors.textColor,
+            borderColor: chartColors.primary,
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + context.parsed.y + '%';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Show message if no model data available
+    if (!data.model_metrics || data.model_metrics.length === 0) {
+      const container = document.getElementById('modelMetricsChartContainer');
+      if (container) {
+        container.innerHTML = 
+          '<div class="text-center text-muted py-5"><svg width="48" height="48" fill="currentColor" class="mb-3 opacity-50" viewBox="0 0 16 16"><path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/></svg><div>No training history yet</div><small>Model performance metrics will appear after training runs.</small></div>';
+      }
+    }
+
+  })
+  .catch(error => {
+    console.error('Error loading chart data:', error);
+    console.error('Error details:', error.message);
+    console.error('Error stack:', error.stack);
+    
+    // Show user-friendly error message
+    const errorMsg = `Failed to load chart data: ${error.message}`;
+    alert(errorMsg + '\n\nCheck browser console for details.');
+    
+    // Ensure all canvas elements exist for next retry
+    ensureCanvasElements();
+  });
+}
+
+// Refresh charts function
+function refreshCharts() {
+  console.log('Refreshing charts...');
+  
+  // Show loading state by updating button text
+  const refreshBtn = event?.target || document.querySelector('button[onclick="refreshCharts()"]');
+  const originalText = refreshBtn?.innerHTML;
+  if (refreshBtn) {
+    refreshBtn.disabled = true;
+    refreshBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Loading...';
+  }
+  
+  // Load charts (will destroy and recreate existing ones)
+  loadCharts();
+  
+  // Re-enable button after a delay
+  setTimeout(() => {
+    if (refreshBtn && originalText) {
+      refreshBtn.disabled = false;
+      refreshBtn.innerHTML = originalText;
+    }
+  }, 1000);
+}
+
+// Load charts on page load
+loadCharts();
+</script>
